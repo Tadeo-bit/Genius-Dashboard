@@ -15,7 +15,7 @@ const STATUS_OPTIONS = [
 ]
 
 const EMPTY_EDIT = { name: '', client: '', type: '', status: '', budget: '', currency: '', startDate: '', endDate: '' }
-const EMPTY_CREATE = { name: '', client: '', budget: '', status: 'active', availableBudget: '', spentBudget: '' }
+const EMPTY_CREATE = { name: '', client: '', type: 'social_ads', budget: '', status: 'active', currency: 'ARS', spent: '' }
 
 function statusColor(s) {
   if (s === 'active'  || s === 'activa')   return '#198754'
@@ -105,10 +105,11 @@ export default function Campaigns() {
       const created = await createCampaign({
         name: createForm.name.trim() || createForm.client.trim(),
         client: createForm.client.trim(),
+        type: createForm.type,
         budget: Number(createForm.budget),
         status: createForm.status,
-        availableBudget: Number(createForm.availableBudget) || 0,
-        spentBudget: Number(createForm.spentBudget) || 0,
+        currency: createForm.currency,
+        spent: Number(createForm.spent) || 0,
       })
 
       setCampaigns(prev => [created, ...prev])
@@ -170,11 +171,25 @@ export default function Campaigns() {
                 {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </label>
-            <label>Presupuesto disponible
-              <input name="availableBudget" type="number" min="0" value={createForm.availableBudget} onChange={handleCreateField} placeholder="0" />
+            <label>Tipo
+              <select name="type" value={createForm.type} onChange={handleCreateField}>
+                <option value="social_ads">Social Ads</option>
+                <option value="search_ads">Search Ads</option>
+                <option value="display">Display</option>
+                <option value="email">Email</option>
+                <option value="influencer">Influencer</option>
+                <option value="content">Content</option>
+                <option value="branding">Branding</option>
+              </select>
+            </label>
+            <label>Moneda
+              <select name="currency" value={createForm.currency} onChange={handleCreateField}>
+                <option value="ARS">ARS</option>
+                <option value="USD">USD</option>
+              </select>
             </label>
             <label>Presupuesto gastado
-              <input name="spentBudget" type="number" min="0" value={createForm.spentBudget} onChange={handleCreateField} placeholder="0" />
+              <input name="spent" type="number" min="0" value={createForm.spent} onChange={handleCreateField} placeholder="0" />
             </label>
           </div>
           <div className="edit-actions">

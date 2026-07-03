@@ -146,3 +146,22 @@ Implementar dashboard visual con KPIs en tiempo real orientado a toma de decisio
 
 - `GD-F03` — Conteo de leads por landing en la vista Landings.
 - Merge de `feature/dashboard-kpi-charts` → `dev` pendiente de revisión.
+
+---
+
+### 2026-07-03 — Fix formulario de creación de campañas
+
+**Cambios realizados**
+
+- `src/pages/Campaigns.jsx`:
+  - `EMPTY_CREATE`: quitados `availableBudget` y `spentBudget`; agregados `type: 'social_ads'`, `currency: 'ARS'`, `spent: ''`.
+  - Payload de `createCampaign`: corregido `spentBudget` → `spent` (nombre real del campo en el backend); eliminado `availableBudget` (no existe en el modelo `Campaign`); agregados `type` y `currency`.
+  - Formulario visual: reemplazados los campos "Presupuesto disponible" y "Presupuesto gastado" por **Tipo**, **Moneda** y **Presupuesto gastado** (`spent`).
+
+**Motivo**
+
+El formulario enviaba `availableBudget` (campo inexistente en el backend) y `spentBudget` en lugar de `spent`, por lo que esos valores eran ignorados por Spring Boot. Los campos `type` y `currency` no estaban disponibles al crear una campaña, por lo que siempre quedaban `null`.
+
+**Estado Git**
+
+- Cambios en `dev`, pendientes de commit.
