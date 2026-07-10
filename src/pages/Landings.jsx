@@ -2,9 +2,14 @@ import { useEffect, useState } from 'react'
 import { getLandings } from '../services/landingCrmApi'
 
 const STATUS_BADGE = {
-  activa:   'badge-active',
-  inactiva: 'badge-closed',
-  borrador: 'badge-draft',
+  activa:    'badge-active',
+  active:    'badge-active',
+  inactiva:  'badge-closed',
+  inactive:  'badge-closed',
+  borrador:  'badge-draft',
+  draft:     'badge-draft',
+  pausada:   'badge-paused',
+  paused:    'badge-paused',
 }
 
 export default function Landings() {
@@ -24,7 +29,25 @@ export default function Landings() {
 
   return (
     <main className="page">
-      <h1>Landings</h1>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+        <h1>Landings</h1>
+        <a
+          href="http://localhost:8000/admin/index.php"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            padding: '8px 16px',
+            borderRadius: 6,
+            background: '#2563eb',
+            color: '#fff',
+            fontSize: '.85rem',
+            fontWeight: 600,
+            textDecoration: 'none',
+          }}
+        >
+          Gestionar Landings
+        </a>
+      </div>
 
       {/* TODO GD-F03: agregar columna de conteo de leads por landing */}
       {/* TODO GD-F05: selector de cliente */}

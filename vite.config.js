@@ -14,6 +14,10 @@ export default defineConfig({
         target: 'http://localhost:3000',
         rewrite: path => path.replace(/^\/api\/crm/, '/api'),
         changeOrigin: true
+      },
+      '/api/export': {
+        target: 'http://localhost:5001',
+        changeOrigin: true
       }
     }
   }

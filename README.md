@@ -47,6 +47,32 @@ El panel abre en `http://localhost:5173`.
 
 Para que los datos sean reales, tener Budget Manager y Landing CRM corriendo antes de abrir el Dashboard. Si alguna API no está disponible, el panel muestra `—` en las métricas que dependen de ella sin romper la pantalla.
 
+## Exportación a Excel
+
+El Dashboard incluye un botón **"⬇ Exportar Excel"** que genera un archivo `.xlsx` con:
+
+- **Hoja Campañas** — tabla con formato profesional (moneda, porcentaje, filas alternadas) + gráfica de barras (Presupuesto vs Gastado) + donut de distribución de estados.
+- **Hoja Leads por Landing** — tabla + gráfica de barras horizontal.
+- **Hoja Resumen** — KPIs ejecutivos.
+
+Si hay un filtro de cliente activo, el Excel incluirá solo los datos de ese cliente.
+
+### Dependencias adicionales
+
+```bash
+pip3 install xlsxwriter flask flask-cors requests
+```
+
+### Iniciar el servidor de exportación
+
+```bash
+# En una terminal aparte (desde la carpeta Genius-Dashboard)
+python3 export_server.py
+# Queda disponible en http://localhost:5001
+```
+
+> Ver [`TECNICO-export-excel.md`](TECNICO-export-excel.md) para la documentación técnica completa.
+
 ## Cómo navegar el panel
 
 1. Abrir `http://localhost:5173` en el navegador.
@@ -65,6 +91,8 @@ genius-dashboard/
 ├── index.html                    Punto de entrada HTML (Vite)
 ├── vite.config.js                Configuración de Vite y proxy hacia las APIs
 ├── package.json
+├── export_server.py              Servidor Flask para exportación a Excel (.xlsx)
+├── TECNICO-export-excel.md       Documentación técnica del módulo de exportación
 ├── src/
 │   ├── main.jsx                  Monta la app en el DOM
 │   ├── App.jsx                   Routing principal (react-router-dom)
@@ -72,7 +100,7 @@ genius-dashboard/
 │   ├── components/
 │   │   └── Layout.jsx            Shell con sidebar y área principal
 │   ├── pages/
-│   │   ├── Dashboard.jsx         Vista home con KPIs globales
+│   │   ├── Dashboard.jsx         Vista home con KPIs globales + botón Exportar Excel
 │   │   ├── Campaigns.jsx         Vista de campañas con tarjetas
 │   │   └── Landings.jsx          Vista de landings con conteo de leads
 │   └── services/
@@ -88,8 +116,7 @@ El archivo `vite.config.js` configura un proxy para evitar errores de CORS en de
 | Prefijo en el frontend | Destino real |
 |------------------------|--------------|
 | `/api/budget/*` | `http://localhost:8080/*` |
-| `/api/crm/*` | `http://localhost:3000/*` |
-
+| `/api/crm/*` | `http://localhost:3000/*` || `/api/export/*` | `http://localhost:5001/*` |
 Las llamadas a la API se hacen siempre con el prefijo (`/api/budget/campaigns`, `/api/crm/landings`) y Vite se encarga de redirigirlas. No hay que cambiar nada para que funcione.
 
 ## Cómo trabajar en este repositorio
