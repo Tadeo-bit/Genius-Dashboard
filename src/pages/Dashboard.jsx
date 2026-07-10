@@ -74,6 +74,27 @@ export default function Dashboard() {
   const [clientFilter, setClientFilter]   = useState('')
   const [loading, setLoading]             = useState(true)
   const [error, setError]                 = useState(null)
+  const [exporting, setExporting]         = useState(false)
+
+  async function handleExport() {
+    setExporting(true)
+    try {
+      const params = clientFilter ? `?client=${encodeURIComponent(clientFilter)}` : ''
+      const res = await fetch(`/api/export/full${params}`)
+      if (!res.ok) throw new Error('El servidor de exportación no está disponible. Iniciá export_server.py.')
+      const blob = await res.blob()
+      const url  = URL.createObjectURL(blob)
+      const a    = document.createElement('a')
+      a.href     = url
+      a.download = `genius_reporte_${new Date().toISOString().slice(0,10)}.xlsx`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (e) {
+      alert(e.message)
+    } finally {
+      setExporting(false)
+    }
+  }
 
   useEffect(() => {
     Promise.all([getBudgetSummary(), getLeadsSummary(), getCampaigns()])
@@ -117,6 +138,14 @@ export default function Dashboard() {
             <option value="">Todos los clientes</option>
             {clients.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
+          <button
+            className="btn-primary"
+            onClick={handleExport}
+            disabled={exporting}
+            title="Descarga un Excel con campañas, leads y gráficas"
+          >
+            {exporting ? '⏳ Generando…' : '⬇ Exportar Excel'}
+          </button>
         </div>
       </div>
 

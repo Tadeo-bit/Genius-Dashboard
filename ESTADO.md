@@ -165,3 +165,34 @@ El formulario enviaba `availableBudget` (campo inexistente en el backend) y `spe
 **Estado Git**
 
 - Cambios en `dev`, pendientes de commit.
+
+---
+
+### 2026-07-10 — Exportación a Excel con gráficas (Flask + xlsxwriter)
+
+**Cambios realizados**
+
+- `export_server.py`: nuevo servidor Flask (puerto 5001) que genera archivos `.xlsx` usando `xlsxwriter`.
+  - `GET /api/export/full` — Excel completo: campañas + leads + resumen ejecutivo. Acepta `?client=` para filtrar.
+  - `GET /api/export/campaigns` — Solo campañas con gráfica de barras (Presupuesto vs Gastado) y donut de estados.
+  - `GET /api/export/leads` — Solo leads por landing con gráfica de barras horizontal.
+  - `GET /api/export/health` — Health check del servicio.
+  - Formato profesional: headers navy, filas alternadas, moneda `$#,##0.00`, porcentaje `0.00%`, bordes en todas las celdas.
+  - Filtro por cliente: campañas filtradas en Budget Manager; leads filtrados localmente (el CRM no soporta filtro en `/summary`).
+- `vite.config.js`: agregado proxy `/api/export` → `http://localhost:5001`.
+- `src/pages/Dashboard.jsx`:
+  - Nuevo estado `exporting` para el botón de descarga.
+  - Función `handleExport()`: llama al endpoint con el filtro de cliente activo, recibe el blob y dispara la descarga nativa del navegador.
+  - Botón **"⬇ Exportar Excel"** en el toolbar del Dashboard, junto al selector de cliente.
+- `TECNICO-export-excel.md`: documento técnico completo con arquitectura, endpoints, estructura del Excel, flujo de datos y limitaciones.
+- `README.md`: actualizado con sección de exportación, dependencias Python, cómo iniciar el servidor y tabla de proxies.
+
+**Dependencias instaladas**
+
+```bash
+pip3 install xlsxwriter flask flask-cors requests
+```
+
+**Estado Git**
+
+- Cambios en `dev`, pendientes de commit.
